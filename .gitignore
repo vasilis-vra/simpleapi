@@ -1,0 +1,43 @@
+# Binaries for programs and plugins
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Output of the `go` command
+*.out
+
+# Go modules
+/go.mod
+/go.sum
+
+# Dependency directories (vendor)
+vendor/
+
+# Test binary, built with `go test -c`
+*.test
+
+# Test result files
+*.cover
+*.coverprofile
+*.cov
+*.coverage
+*.tmp
+
+# Local environment files
+.env
+
+# IDE and editor specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# MacOS-specific files
+.DS_Store
+
+# Node.js dependency (in case you use Go with a frontend framework)
+node_modules/
