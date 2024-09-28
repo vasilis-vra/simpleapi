@@ -1,6 +1,7 @@
 package services
 
 import (
+	"errors"
 	"simplerapi/models"
 	"strconv"
 
@@ -47,24 +48,33 @@ func (s *productServiceImpl) GetProductById(c *gin.Context) (models.Product, err
 	return product, nil
 }
 
-func (s *productServiceImpl) ListProducts(c *gin.Context) ([]models.Product, error) {
+func (s *productServiceImpl) GetProducts(c *gin.Context) ([]models.Product, error) {
 	var products []models.Product
 	page := c.DefaultQuery("page", "1")
 	pageSize := c.DefaultQuery("page_size", "10")
 
-	// Convert page and pageSize to integers
 	var offset int
-	if p, err := strconv.Atoi(page); err == nil {
-		offset = (p - 1) * 10 // Default to 10 if invalid
+
+	if page == "1" && pageSize == "10" {
+		if err := s.db.Find(&products).Error; err != nil {
+			return nil, err
+		}
+		return products, nil
 	}
 
-	//Pagination query, default page size is 10
+	if p, err := strconv.Atoi(page); err == nil && p > 0 {
+		offset = (p - 1) * 10
+	} else {
+		return nil, errors.New("invalid page number")
+	}
+
 	ps, err := strconv.Atoi(pageSize)
-	if err != nil {
+	if err != nil || ps <= 0 {
 		ps = 10
 	}
+
 	if err := s.db.Limit(ps).Offset(offset).Find(&products).Error; err != nil {
-		return products, err
+		return nil, err
 	}
 
 	return products, nil
@@ -86,7 +96,6 @@ func (s *productServiceImpl) UpdateProduct(c *gin.Context) (models.Product, erro
 	if err := s.db.Save(&product).Error; err != nil {
 		return product, err
 	}
-
 	return product, nil
 }
 

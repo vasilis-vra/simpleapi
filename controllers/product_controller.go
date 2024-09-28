@@ -53,8 +53,11 @@ func (p *ProductController) GetProductById(c *gin.Context) {
 }
 
 func (p *ProductController) GetProducts(c *gin.Context) {
-	products, err := p.service.ListProducts(c)
+	products, err := p.service.GetProducts(c)
 	if err != nil {
+		// Log the error for debugging
+		log.Printf("Error getting products: %v", err)
+
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
