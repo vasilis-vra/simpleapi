@@ -2,32 +2,34 @@ package main
 
 import (
 	"log"
+	"simplerapi/controllers"
+	"simplerapi/postgresDB"
+	"simplerapi/services"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
-
-var db *gorm.DB
 
 func main() {
 	// Initialize the database
-	db = initDB()
-	if db == nil {
+	database := postgresDB.InitDB()
+	if database == nil {
 		log.Fatal("failed to initialize database")
 	}
 
-	seedDB(db)
+	///setup db
+	postgresDB.DB = database
+
+	//inject services
+	productService := services.NewProductService(postgresDB.DB)
+
+	//seed database
+	postgresDB.SeedDB(postgresDB.DB)
 
 	// Set up Gin router
 	r := gin.Default()
 
-	// Define routes
-	r.POST("/products", createProduct)
-	r.GET("/products/:id", getProduct)
-	r.GET("/products", getProducts)
-	r.PUT("/products/:id", updateProduct)
-	r.DELETE("/products/:id", deleteProduct)
+	//setup controller
+	controllers.SetupProductController(r, productService)
 
-	// Start the server
 	r.Run(":8080")
 }
