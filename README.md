@@ -1,4 +1,4 @@
-# SimplerAPI
+# SimpleAPI
 ## A RESTful API built using Go, Gin, and PostgreSQL for managing a product catalog. This application allows you to perform CRUD (Create, Read, Update, Delete) operations on products.
 
 ## Technologies Used
